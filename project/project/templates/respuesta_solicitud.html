@@ -1,0 +1,276 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f7f3">
+    <title>Portal de cobros corporativos | SENA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #17231d;
+            --muted: #717b74;
+            --green: #087c55;
+            --green-dark: #075e42;
+            --mint: #e5f3eb;
+            --line: #e7eae5;
+            --paper: #fff;
+            --canvas: #f6f7f3;
+            --amber: #a65b17;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--canvas); color: var(--ink); font-family: 'DM Sans', sans-serif; }
+        h1, h2, h3, .brand-name { font-family: 'Manrope', sans-serif; letter-spacing: 0; }
+        .topbar { height: 72px; background: var(--paper); border-bottom: 1px solid var(--line); }
+        .topbar-inner { max-width: 1320px; height: 100%; margin: auto; padding: 0 32px; }
+        .brand-mark { width: 40px; height: 40px; display: grid; place-items: center; color: white; background: var(--green); border-radius: 12px; font-size: 20px; }
+        .brand-name { font-weight: 800; font-size: 15px; line-height: 1.2; }
+        .brand-caption { font-size: 11px; color: var(--muted); }
+        .top-link { color: #45534b; text-decoration: none; font-size: 13px; font-weight: 600; }
+        .top-link:hover { color: var(--green); }
+        .avatar { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: #e9eee8; color: #43564a; font-weight: 700; font-size: 12px; }
+        main { max-width: 1320px; margin: auto; padding: 38px 32px 64px; }
+        .eyebrow { color: var(--green); font-size: 11px; font-weight: 700; letter-spacing: 0; text-transform: uppercase; }
+        .page-title { margin: 7px 0 8px; font-size: 31px; font-weight: 800; }
+        .page-subtitle { color: var(--muted); font-size: 14px; }
+        .profile-chip { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); padding: 9px 12px; border-radius: 8px; color: #46534c; background: white; font-size: 12px; font-weight: 600; }
+        .summary-grid { display: grid; grid-template-columns: 1.45fr 1fr 1fr; gap: 14px; margin: 27px 0 30px; }
+        .summary-card { min-height: 132px; padding: 20px 21px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; }
+        .summary-card.primary { color: white; background: var(--green-dark); border-color: var(--green-dark); }
+        .summary-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+        .primary .summary-label { color: #c3e1d2; }
+        .summary-amount { margin: 9px 0 2px; font-family: 'Manrope', sans-serif; font-size: 28px; line-height: 1.2; font-weight: 800; }
+        .summary-note { font-size: 11px; color: var(--muted); }
+        .primary .summary-note { color: #c3e1d2; }
+        .summary-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 9px; background: var(--mint); color: var(--green); font-size: 16px; }
+        .primary .summary-icon { background: #ffffff20; color: white; }
+        .section-heading { margin-bottom: 14px; }
+        .section-title { margin: 0; font-size: 17px; font-weight: 800; }
+        .section-caption { margin-top: 3px; color: var(--muted); font-size: 12px; }
+        .invoice-panel { background: white; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 15px 18px; border-bottom: 1px solid var(--line); }
+        .search-wrap { position: relative; width: min(100%, 300px); }
+        .search-wrap i { position: absolute; top: 10px; left: 12px; color: #8b958e; }
+        .search-wrap input { height: 38px; padding-left: 35px; border-color: var(--line); font-size: 12px; }
+        .search-wrap input:focus { border-color: #73b59a; box-shadow: 0 0 0 3px #087c5517; }
+        .filter-group { display: flex; gap: 5px; }
+        .filter-btn { border: 1px solid transparent; border-radius: 6px; background: transparent; padding: 8px 11px; color: #667169; font-size: 11px; font-weight: 700; }
+        .filter-btn:hover { background: #f1f5f1; }
+        .filter-btn.active { color: var(--green-dark); background: var(--mint); }
+        .table { margin: 0; vertical-align: middle; }
+        .table thead th { padding: 12px 18px; border-bottom-color: var(--line); background: #fbfcfa; color: #818a83; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0; white-space: nowrap; }
+        .table tbody td { padding: 15px 18px; border-bottom-color: #eef0ed; font-size: 12px; }
+        .table tbody tr:last-child td { border-bottom: 0; }
+        .invoice-id { color: #78827b; font-size: 10px; }
+        .invoice-concept { font-weight: 700; color: #26342b; }
+        .status { display: inline-flex; align-items: center; gap: 5px; border-radius: 20px; padding: 5px 8px; font-size: 10px; font-weight: 700; white-space: nowrap; }
+        .status.pending { color: #94611b; background: #fff3db; }
+        .status.paid { color: #14734f; background: #e3f3e9; }
+        .status i { font-size: 8px; }
+        .amount { font-weight: 700; white-space: nowrap; }
+        .btn-pay { padding: 7px 11px; border: 0; border-radius: 6px; background: var(--green); color: white; font-size: 11px; font-weight: 700; white-space: nowrap; }
+        .btn-pay:hover { background: var(--green-dark); color: white; }
+        .btn-receipt { width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 6px; background: white; color: #526057; }
+        .btn-receipt:hover { background: #f3f6f2; }
+        .empty-state { padding: 35px 16px !important; text-align: center; color: var(--muted); }
+        .lower-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; margin-top: 17px; }
+        .info-panel { padding: 17px 19px; background: white; border: 1px solid var(--line); border-radius: 8px; }
+        .info-title { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; font-size: 12px; font-weight: 800; }
+        .info-title i { color: var(--green); font-size: 15px; }
+        .info-copy { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+        .help-link { color: var(--green-dark); font-weight: 700; text-decoration: none; }
+        .footer-note { margin-top: 21px; color: #879089; text-align: center; font-size: 10px; }
+        .modal-content { border: 0; border-radius: 10px; }
+        .modal-header { border-bottom-color: var(--line); }
+        .modal-title { font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 800; }
+        .modal-body { color: #606c63; font-size: 13px; line-height: 1.6; }
+        @media (max-width: 760px) {
+            .topbar { height: 64px; }
+            .topbar-inner { padding: 0 17px; }
+            .top-link { display: none; }
+            main { padding: 27px 16px 40px; }
+            .page-title { font-size: 26px; }
+            .summary-grid { grid-template-columns: 1fr 1fr; gap: 9px; margin: 21px 0 25px; }
+            .summary-card { min-height: 112px; padding: 15px; }
+            .summary-card.primary { grid-column: 1 / -1; }
+            .summary-amount { font-size: 24px; }
+            .toolbar { align-items: stretch; flex-direction: column; }
+            .search-wrap { width: 100%; }
+            .filter-group { overflow-x: auto; }
+            .filter-btn { flex: 0 0 auto; }
+            .table-responsive { overflow-x: auto; }
+            .table { min-width: 680px; }
+            .lower-grid { grid-template-columns: 1fr; }
+            .profile-chip { font-size: 0; gap: 0; padding: 9px; }
+            .profile-chip i { font-size: 14px; }
+        }
+        @media (prefers-reduced-motion: no-preference) {
+            .summary-card, .invoice-panel, .info-panel { animation: arrive .4s ease-out both; }
+            .summary-card:nth-child(2) { animation-delay: .06s; }
+            .summary-card:nth-child(3) { animation-delay: .12s; }
+            @keyframes arrive { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner d-flex align-items-center justify-content-between">
+            <a href="/" class="d-flex align-items-center gap-2 text-decoration-none text-dark" aria-label="Inicio del portal">
+                <span class="brand-mark"><i class="bi bi-buildings"></i></span>
+                <span><span class="brand-name d-block">SENA <span class="fw-semibold">Empresas</span></span><span class="brand-caption">Portal de clientes</span></span>
+            </a>
+            <nav class="d-flex align-items-center gap-4" aria-label="Navegación principal">
+                <a class="top-link" href="#cobros">Mis cobros</a>
+                <a class="top-link" href="#ayuda">Centro de ayuda</a>
+                <span class="avatar" aria-label="Perfil de empresa">AC</span>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="d-flex flex-wrap justify-content-between align-items-end gap-3" aria-labelledby="page-title">
+            <div>
+                <div class="eyebrow">Portal empresarial</div>
+                <h1 class="page-title" id="page-title">Hola, bienvenida a tu espacio</h1>
+                <p class="page-subtitle mb-0">Consulta tus cobros y mantén al día la información de tu empresa.</p>
+            </div>
+            <span class="profile-chip"><i class="bi bi-building"></i> ACME Soluciones S.A.S. <i class="bi bi-chevron-down"></i></span>
+        </section>
+
+        <section class="summary-grid" aria-label="Resumen de cobros">
+            <article class="summary-card primary d-flex justify-content-between align-items-start">
+                <div><div class="summary-label">Total pendiente</div><div class="summary-amount" id="total-pending">$ 3.240.000</div><div class="summary-note">2 cobros por gestionar</div></div>
+                <span class="summary-icon"><i class="bi bi-receipt"></i></span>
+            </article>
+            <article class="summary-card d-flex justify-content-between align-items-start">
+                <div><div class="summary-label">Próximo vencimiento</div><div class="summary-amount" style="font-size:22px">15 oct 2026</div><div class="summary-note">Factura FAC-2026-0142</div></div>
+                <span class="summary-icon"><i class="bi bi-calendar-event"></i></span>
+            </article>
+            <article class="summary-card d-flex justify-content-between align-items-start">
+                <div><div class="summary-label">Pagos realizados</div><div class="summary-amount">4</div><div class="summary-note">En el último año</div></div>
+                <span class="summary-icon"><i class="bi bi-check2-circle"></i></span>
+            </article>
+        </section>
+
+        <section id="cobros" aria-labelledby="invoices-title">
+            <div class="section-heading d-flex justify-content-between align-items-end gap-2">
+                <div><h2 class="section-title" id="invoices-title">Tus cobros</h2><div class="section-caption">Revisa el detalle y el estado de cada documento.</div></div>
+                <button class="btn btn-sm btn-outline-secondary" id="export-btn" type="button" style="font-size:11px"><i class="bi bi-download me-1"></i> Descargar resumen</button>
+            </div>
+            <div class="invoice-panel">
+                <div class="toolbar">
+                    <label class="search-wrap" aria-label="Buscar cobros">
+                        <i class="bi bi-search"></i>
+                        <input class="form-control" id="invoice-search" type="search" placeholder="Buscar por concepto o número...">
+                    </label>
+                    <div class="filter-group" role="group" aria-label="Filtrar cobros">
+                        <button class="filter-btn active" type="button" data-filter="all" aria-pressed="true">Todos <span class="filter-count">5</span></button>
+                        <button class="filter-btn" type="button" data-filter="pending" aria-pressed="false">Pendientes <span class="filter-count">2</span></button>
+                        <button class="filter-btn" type="button" data-filter="paid" aria-pressed="false">Pagados <span class="filter-count">3</span></button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table" id="invoice-table">
+                        <thead><tr><th scope="col">Documento</th><th scope="col">Concepto</th><th scope="col">Emisión</th><th scope="col">Vencimiento</th><th scope="col">Estado</th><th scope="col">Valor</th><th scope="col"><span class="visually-hidden">Acciones</span></th></tr></thead>
+                        <tbody>
+                            <tr data-status="pending" data-amount="1850000"><td><span class="invoice-id">FAC-2026-0142</span></td><td><span class="invoice-concept">Servicio empresarial</span></td><td>15 sep 2026</td><td>15 oct 2026</td><td><span class="status pending"><i class="bi bi-circle-fill"></i> Pendiente</span></td><td class="amount">$ 1.850.000</td><td><button class="btn-pay" type="button" data-invoice="FAC-2026-0142" data-amount="$ 1.850.000">Ver opciones</button></td></tr>
+                            <tr data-status="pending" data-amount="1390000"><td><span class="invoice-id">FAC-2026-0138</span></td><td><span class="invoice-concept">Formación complementaria</span></td><td>01 sep 2026</td><td>20 oct 2026</td><td><span class="status pending"><i class="bi bi-circle-fill"></i> Pendiente</span></td><td class="amount">$ 1.390.000</td><td><button class="btn-pay" type="button" data-invoice="FAC-2026-0138" data-amount="$ 1.390.000">Ver opciones</button></td></tr>
+                            <tr data-status="paid" data-amount="920000"><td><span class="invoice-id">FAC-2026-0104</span></td><td><span class="invoice-concept">Asesoría técnica</span></td><td>10 ago 2026</td><td>10 sep 2026</td><td><span class="status paid"><i class="bi bi-check-circle-fill"></i> Pagado</span></td><td class="amount">$ 920.000</td><td><button class="btn-receipt" type="button" aria-label="Descargar comprobante FAC-2026-0104" data-receipt="FAC-2026-0104"><i class="bi bi-download"></i></button></td></tr>
+                            <tr data-status="paid" data-amount="650000"><td><span class="invoice-id">FAC-2026-0089</span></td><td><span class="invoice-concept">Capacitación empresarial</span></td><td>12 jul 2026</td><td>12 ago 2026</td><td><span class="status paid"><i class="bi bi-check-circle-fill"></i> Pagado</span></td><td class="amount">$ 650.000</td><td><button class="btn-receipt" type="button" aria-label="Descargar comprobante FAC-2026-0089" data-receipt="FAC-2026-0089"><i class="bi bi-download"></i></button></td></tr>
+                            <tr data-status="paid" data-amount="480000"><td><span class="invoice-id">FAC-2026-0061</span></td><td><span class="invoice-concept">Servicio empresarial</span></td><td>05 jun 2026</td><td>05 jul 2026</td><td><span class="status paid"><i class="bi bi-check-circle-fill"></i> Pagado</span></td><td class="amount">$ 480.000</td><td><button class="btn-receipt" type="button" aria-label="Descargar comprobante FAC-2026-0061" data-receipt="FAC-2026-0061"><i class="bi bi-download"></i></button></td></tr>
+                            <tr class="d-none" id="empty-row"><td colspan="7" class="empty-state">No encontramos cobros con esos criterios.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="lower-grid" id="ayuda" aria-label="Ayuda e información">
+            <article class="info-panel"><div class="info-title"><i class="bi bi-shield-check"></i> Pagos con tranquilidad</div><p class="info-copy">Antes de pagar, verifica el número de documento y el valor. Los pagos se habilitarán cuando el canal oficial de recaudo esté conectado. <a class="help-link" href="mailto:servicioalciudadano@sena.edu.co">Contactar soporte</a></p></article>
+            <article class="info-panel"><div class="info-title"><i class="bi bi-info-circle"></i> ¿Eres cliente nuevo?</div><p class="info-copy">Confirma que los datos de empresa y los cobros correspondan a tu acuerdo de servicio. Para actualizar tu perfil, comunícate con tu asesor.</p></article>
+        </section>
+        <p class="footer-note">Portal de demostración · Los documentos, valores y datos de empresa son ilustrativos.</p>
+    </main>
+
+    <div class="modal fade" id="action-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+            <div class="modal-header"><h2 class="modal-title" id="modal-title">Información del cobro</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+            <div class="modal-body" id="modal-message"></div>
+            <div class="modal-footer border-0 pt-0"><button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button></div>
+        </div></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (() => {
+            const search = document.getElementById('invoice-search');
+            const rows = [...document.querySelectorAll('#invoice-table tbody tr[data-status]')];
+            const emptyRow = document.getElementById('empty-row');
+            const modal = new bootstrap.Modal(document.getElementById('action-modal'));
+            let activeFilter = 'all';
+
+            function updateRows() {
+                const query = search.value.trim().toLocaleLowerCase('es');
+                let visible = 0;
+                rows.forEach((row) => {
+                    const matchesFilter = activeFilter === 'all' || row.dataset.status === activeFilter;
+                    const matchesSearch = row.textContent.toLocaleLowerCase('es').includes(query);
+                    const show = matchesFilter && matchesSearch;
+                    row.classList.toggle('d-none', !show);
+                    if (show) visible += 1;
+                });
+                emptyRow.classList.toggle('d-none', visible > 0);
+            }
+
+            document.querySelectorAll('.filter-btn').forEach((button) => {
+                button.addEventListener('click', () => {
+                    activeFilter = button.dataset.filter;
+                    document.querySelectorAll('.filter-btn').forEach((item) => {
+                        const selected = item === button;
+                        item.classList.toggle('active', selected);
+                        item.setAttribute('aria-pressed', String(selected));
+                    });
+                    updateRows();
+                });
+            });
+            search.addEventListener('input', updateRows);
+
+            function showMessage(title, message) {
+                document.getElementById('modal-title').textContent = title;
+                document.getElementById('modal-message').textContent = message;
+                modal.show();
+            }
+
+            document.querySelectorAll('.btn-pay').forEach((button) => {
+                button.addEventListener('click', () => showMessage(
+                    `Cobro ${button.dataset.invoice}`,
+                    `Valor: ${button.dataset.amount}. Este portal es una demostración y todavía no está conectado a un canal oficial de pago. Comunícate con tu asesor para confirmar las opciones de recaudo.`
+                ));
+            });
+            document.querySelectorAll('[data-receipt]').forEach((button) => {
+                button.addEventListener('click', () => showMessage(
+                    'Comprobante no disponible',
+                    `El comprobante de ${button.dataset.receipt} estará disponible cuando se conecte el sistema de facturación.`
+                ));
+            });
+            document.getElementById('export-btn').addEventListener('click', () => {
+                const csvRows = [['Documento', 'Concepto', 'Estado', 'Valor']];
+                rows.forEach((row) => {
+                    const cells = row.querySelectorAll('td');
+                    csvRows.push([cells[0].innerText.trim(), cells[1].innerText.trim(), row.dataset.status === 'paid' ? 'Pagado' : 'Pendiente', cells[5].innerText.trim()]);
+                });
+                const csv = '\uFEFF' + csvRows.map((line) => line.map((value) => `"${value.replaceAll('"', '""')}"`).join(';')).join('\n');
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+                link.download = 'resumen-cobros.csv';
+                link.click();
+                URL.revokeObjectURL(link.href);
+            });
+        })();
+    </script>
+</body>
+</html>

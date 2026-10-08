@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel del concesionario</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --ink: #14202e;
+            --navy: #101c2c;
+            --bg: #f0f2f6;
+            --line: #dde2ea;
+            --muted: #5f6b7a;
+            --accent: #ff5a1f;
+        }
+        body { font-family: "Figtree", system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+        h1, h2, h3, .brand, .big { font-family: "Sora", "Figtree", sans-serif; }
+
+        .app { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; }
+
+        /* Barra lateral */
+        .side { background: var(--navy); color: #b9c4d3; padding: 1.5rem 1rem; position: sticky; top: 0; height: 100vh; }
+        .brand { font-size: 1.3rem; font-weight: 800; color: #fff; padding: 0 .85rem 1.5rem; display: flex; align-items: center; gap: .6rem; }
+        .brand i { color: var(--accent); }
+        .side nav { display: flex; flex-direction: column; gap: .25rem; }
+        .side a { color: inherit; text-decoration: none; display: flex; align-items: center; gap: .75rem; padding: .65rem .85rem; border-radius: .65rem; font-weight: 500; }
+        .side a:hover, .side a.active { background: rgba(255, 255, 255, .1); color: #fff; }
+        .side a.active i { color: var(--accent); }
+
+        main { padding: 2rem clamp(1rem, 3vw, 2.5rem); min-width: 0; }
+        .panel { background: #fff; border: 1px solid var(--line); border-radius: 1rem; padding: 1.25rem; height: 100%; }
+        .muted { color: var(--muted); }
+        .kpi-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-size: 1.25rem; background: #e8ecf3; color: var(--navy); flex: none; }
+        .kpi-icon.hot { background: #ffe9e0; color: #c43d0a; }
+        .big { font-size: 1.7rem; font-weight: 800; line-height: 1.1; }
+
+        /* Velocímetro de la meta mensual */
+        .gauge { --p: 0; position: relative; width: 260px; height: 130px; margin: 0 auto; border-radius: 260px 260px 0 0;
+                 background: conic-gradient(from 270deg at 50% 100%, var(--accent) calc(var(--p) * 1.8deg), #e3e8ee 0); }
+        .gauge-in { position: absolute; left: 44px; bottom: 0; width: 172px; height: 86px; border-radius: 172px 172px 0 0; background: #fff;
+                    display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: .25rem; }
+
+        /* Tabla */
+        .avatar { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; color: #fff; background: var(--navy); flex: none; }
+        .table > :not(caption) > * > * { padding: .85rem .75rem; vertical-align: middle; }
+        .btn-brand { background: var(--accent); color: #fff; border: 0; font-weight: 600; }
+        .btn-brand:hover { background: #e24a10; color: #fff; }
+        .form-control:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 .2rem rgba(255, 90, 31, .2); }
+        .progress { height: 8px; }
+        .progress-bar { background: var(--navy); }
+
+        @media (max-width: 991px) {
+            .app { grid-template-columns: 1fr; }
+            .side { position: static; height: auto; display: flex; align-items: center; gap: 1rem; overflow-x: auto; padding: .75rem 1rem; }
+            .brand { padding: 0; white-space: nowrap; }
+            .side nav { flex-direction: row; }
+            .side a { white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <aside class="side">
+        <div class="brand"><i class="bi bi-car-front-fill"></i> AutoPanel</div>
+        <nav>
+            <a href="#resumen" class="active"><i class="bi bi-speedometer2"></i> Resumen</a>
+            <a href="#inventario"><i class="bi bi-box-seam"></i> Inventario</a>
+            <a href="#clientes"><i class="bi bi-people"></i> Clientes</a>
+        </nav>
+    </aside>
+
+    <main>
+        <header id="resumen" class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h1 class="h2 fw-bold mb-1">Ventas de octubre</h1>
+                <p class="muted mb-0">Así va el concesionario este mes.</p>
+            </div>
+            <button class="btn btn-brand px-4 py-2 rounded-pill" data-bs-toggle="modal" data-bs-target="#modalCliente">
+                <i class="bi bi-plus-lg me-1"></i> Nuevo cliente
+            </button>
+        </header>
+
+        <section class="row g-3 mb-4" id="kpis"></section>
+
+        <section id="inventario" class="row g-3 mb-4">
+            <div class="col-lg-5">
+                <div class="panel text-center">
+                    <h2 class="h5 fw-bold text-start mb-4">Meta de ventas del mes</h2>
+                    <div class="gauge" id="gauge">
+                        <div class="gauge-in">
+                            <strong class="big" id="gaugeNum"></strong>
+                            <span class="muted small" id="gaugeTxt"></span>
+                        </div>
+                    </div>
+                    <p class="muted small mt-3 mb-0" id="gaugeMsg"></p>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="panel">
+                    <h2 class="h5 fw-bold mb-3">Inventario disponible</h2>
+                    <div id="inventarioLista"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="clientes" class="panel">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                <h2 class="h5 fw-bold mb-0">Clientes</h2>
+                <div class="d-flex flex-wrap gap-2">
+                    <div class="input-group" style="max-width: 260px;">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="search" id="buscar" class="form-control" placeholder="Buscar por nombre o correo" aria-label="Buscar clientes">
+                    </div>
+                    <select id="filtroEstado" class="form-select w-auto" aria-label="Filtrar por estado">
+                        <option value="">Todos los estados</option>
+                        <option>Cotización</option>
+                        <option>Financiación</option>
+                        <option>Vendido</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr class="muted small">
+                            <th>Cliente</th><th>Teléfono</th><th>Vehículo</th><th>Precio</th><th>Fecha</th><th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla"></tbody>
+                </table>
+            </div>
+            <p id="vacio" class="text-center muted py-4 mb-0 d-none">No encontramos clientes con ese filtro. Prueba con otro nombre o estado.</p>
+        </section>
+    </main>
+</div>
+
+<!-- Modal: nuevo cliente -->
+<div class="modal fade" id="modalCliente" tabindex="-1" aria-labelledby="tituloModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" id="formCliente" novalidate>
+            <div class="modal-header border-0">
+                <h2 class="modal-title h5 fw-bold" id="tituloModal">Nuevo cliente</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label" for="fNombre">Nombre completo</label>
+                    <input class="form-control" id="fNombre" required>
+                    <div class="invalid-feedback">Escribe el nombre del cliente.</div>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label" for="fTel">Teléfono</label>
+                        <input class="form-control" id="fTel" inputmode="tel" pattern="[0-9 +]{7,15}" required>
+                        <div class="invalid-feedback">Usa solo números (7 a 15 dígitos).</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label" for="fCorreo">Correo</label>
+                        <input class="form-control" id="fCorreo" type="email" required>
+                        <div class="invalid-feedback">Escribe un correo válido.</div>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <label class="form-label" for="fVehiculo">Vehículo de interés</label>
+                    <select class="form-select" id="fVehiculo" required></select>
+                    <div class="invalid-feedback">Elige un vehículo.</div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-brand px-4">Guardar cliente</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toast" class="toast text-bg-success border-0" role="status" aria-live="polite">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMsg"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ---------- Datos de ejemplo (luego los reemplazas por tu base de datos) ----------
+    const META_MENSUAL = 5;
+    const inventario = [
+        { modelo: "Chevrolet Onix 2025",  precio: 68900000,  unidades: 8 },
+        { modelo: "Renault Duster 2023",  precio: 89500000,  unidades: 5 },
+        { modelo: "Mazda CX-30 2024",     precio: 112000000, unidades: 4 },
+        { modelo: "Kia Sportage 2024",    precio: 138000000, unidades: 3 },
+        { modelo: "Toyota Hilux 2023",    precio: 215000000, unidades: 2 }
+    ];
+    const clientes = [
+        { nombre: "Laura Gómez",     tel: "3105551234", correo: "laura@correo.com",  vehiculo: "Mazda CX-30 2024",    fecha: "2026-10-02", estado: "Vendido" },
+        { nombre: "Carlos Rojas",    tel: "3157778899", correo: "carlos@correo.com", vehiculo: "Kia Sportage 2024",   fecha: "2026-10-04", estado: "Financiación" },
+        { nombre: "Daniela Pérez",   tel: "3001239876", correo: "dani@correo.com",   vehiculo: "Chevrolet Onix 2025", fecha: "2026-10-05", estado: "Cotización" },
+        { nombre: "Andrés Martínez", tel: "3204448822", correo: "andres@correo.com", vehiculo: "Toyota Hilux 2023",   fecha: "2026-10-06", estado: "Vendido" },
+        { nombre: "Sofía Herrera",   tel: "3112223344", correo: "sofia@correo.com",  vehiculo: "Renault Duster 2023", fecha: "2026-10-07", estado: "Vendido" },
+        { nombre: "Julián Castro",   tel: "3009876543", correo: "julian@correo.com", vehiculo: "Chevrolet Onix 2025", fecha: "2026-10-07", estado: "Cotización" }
+    ];
+
+    // ---------- Utilidades ----------
+    const $ = (id) => document.getElementById(id);
+    const cop = (n) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
+    const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const iniciales = (n) => n.trim().split(/\s+/).slice(0, 2).map((p) => p[0]).join("").toUpperCase();
+    const precioDe = (v) => (inventario.find((i) => i.modelo === v) || {}).precio || 0;
+    const badge = { "Cotización": "bg-warning-subtle text-warning-emphasis", "Financiación": "bg-info-subtle text-info-emphasis", "Vendido": "bg-success-subtle text-success-emphasis" };
+
+    // ---------- Indicadores y velocímetro ----------
+    function pintarResumen() {
+        const vendidos = clientes.filter((c) => c.estado === "Vendido");
+        const ventas = vendidos.reduce((s, c) => s + precioDe(c.vehiculo), 0);
+        const items = [
+            { t: "Clientes registrados", v: clientes.length, i: "bi-people" },
+            { t: "Vehículos vendidos", v: vendidos.length, i: "bi-key" },
+            { t: "Cotizaciones abiertas", v: clientes.filter((c) => c.estado === "Cotización").length, i: "bi-file-earmark-text", hot: true },
+            { t: "Ventas del mes", v: cop(ventas), i: "bi-cash-stack" }
+        ];
+        $("kpis").innerHTML = items.map((k) => `
+            <div class="col-6 col-xl-3">
+                <div class="panel d-flex align-items-center gap-3">
+                    <div class="kpi-icon ${k.hot ? "hot" : ""}"><i class="bi ${k.i}"></i></div>
+                    <div class="min-w-0"><div class="big" style="font-size:${String(k.v).length > 9 ? "1.15rem" : "1.7rem"}">${k.v}</div><div class="muted small">${k.t}</div></div>
+                </div>
+            </div>`).join("");
+
+        const pct = Math.min(100, Math.round((vendidos.length / META_MENSUAL) * 100));
+        $("gauge").style.setProperty("--p", pct);
+        $("gaugeNum").textContent = pct + "%";
+        $("gaugeTxt").textContent = `${vendidos.length} de ${META_MENSUAL} vehículos`;
+        const faltan = Math.max(0, META_MENSUAL - vendidos.length);
+        $("gaugeMsg").textContent = faltan ? `Faltan ${faltan} ventas para cumplir la meta.` : "¡Meta del mes cumplida!";
+    }
+
+    function pintarInventario() {
+        const max = Math.max(...inventario.map((i) => i.unidades));
+        $("inventarioLista").innerHTML = inventario.map((i) => `
+            <div class="mb-3">
+                <div class="d-flex justify-content-between">
+                    <span class="fw-semibold">${i.modelo}</span>
+                    <span class="muted small">${i.unidades} disponibles · ${cop(i.precio)}</span>
+                </div>
+                <div class="progress mt-1"><div class="progress-bar" style="width:${(i.unidades / max) * 100}%"></div></div>
+            </div>`).join("");
+        $("fVehiculo").innerHTML = `<option value="" selected disabled>Selecciona un vehículo</option>` +
+            inventario.map((i) => `<option>${i.modelo}</option>`).join("");
+    }
+
+    // ---------- Tabla con búsqueda y filtro ----------
+    function pintarTabla() {
+        const q = $("buscar").value.trim().toLowerCase();
+        const est = $("filtroEstado").value;
+        const lista = clientes.filter((c) =>
+            (!est || c.estado === est) && (!q || c.nombre.toLowerCase().includes(q) || c.correo.toLowerCase().includes(q)));
+
+        $("tabla").innerHTML = lista.map((c) => `
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="avatar">${esc(iniciales(c.nombre))}</div>
+                        <div><div class="fw-semibold">${esc(c.nombre)}</div><div class="muted small">${esc(c.correo)}</div></div>
+                    </div>
+                </td>
+                <td>${esc(c.tel)}</td>
+                <td>${esc(c.vehiculo)}</td>
+                <td>${cop(precioDe(c.vehiculo))}</td>
+                <td>${new Date(c.fecha + "T00:00").toLocaleDateString("es-CO", { day: "numeric", month: "short" })}</td>
+                <td><span class="badge rounded-pill ${badge[c.estado]}">${c.estado}</span></td>
+            </tr>`).join("");
+        $("vacio").classList.toggle("d-none", lista.length > 0);
+    }
+
+    // ---------- Formulario ----------
+    $("formCliente").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const form = e.target;
+        form.classList.add("was-validated");
+        if (!form.checkValidity()) return;
+
+        clientes.unshift({
+            nombre: $("fNombre").value.trim(),
+            tel: $("fTel").value.trim(),
+            correo: $("fCorreo").value.trim(),
+            vehiculo: $("fVehiculo").value,
+            fecha: new Date().toISOString().slice(0, 10),
+            estado: "Cotización"
+        });
+        form.reset();
+        form.classList.remove("was-validated");
+        bootstrap.Modal.getInstance($("modalCliente")).hide();
+        pintarResumen();
+        pintarTabla();
+        $("toastMsg").textContent = "Cliente guardado";
+        bootstrap.Toast.getOrCreateInstance($("toast")).show();
+    });
+
+    $("buscar").addEventListener("input", pintarTabla);
+    $("filtroEstado").addEventListener("change", pintarTabla);
+
+    pintarInventario();
+    pintarResumen();
+    pintarTabla();
+</script>
+</body>
+</html>
