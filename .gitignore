@@ -1,0 +1,19 @@
+env/
+venv/
+ENV/
+
+# Archivos compilados de Python
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Base de datos local (Por defecto en Django para desarrollo)
+*.sqlite3
+
+# Archivos de configuración del entorno y llaves secretas
+.env
+.secrets
+
+# Carpetas de configuración de editores (Opcional pero recomendado)
+.vscode/
+.idea/
